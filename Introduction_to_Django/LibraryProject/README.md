@@ -1,0 +1,1 @@
+Django environment project setup
