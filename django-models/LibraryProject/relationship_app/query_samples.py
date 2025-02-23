@@ -22,8 +22,9 @@ def get_books_in_library(library_name):
 
 # Retrieve the librarian for a library
 def get_librarian_for_library(library_name):
-    librarian = Librarian.objects.get(library__name=library_name)
-    return librarian.name if librarian else "No librarian found"
+    library_obj = Library.objects.get(name=library_name)
+    librarian = Librarian.objects.get(library=library_obj)
+    return librarian.name
 
 #if __name__ == '__main__':
  #   # Sample function calls
