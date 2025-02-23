@@ -19,6 +19,6 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),  # Django Admin
-    path('', include('bookshelf.urls')), # Include bookshelf app URLs
-    path('relationship/', include('relationship_app.urls')),# Include relationship_app URLs
+    path('', include('bookshelf.urls')), 
+    path('relationship/', include('relationship_app.urls')),
 ]  
