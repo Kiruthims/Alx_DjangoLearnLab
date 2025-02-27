@@ -5,7 +5,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 from .forms import BookForm
 from .models import Library, Book
-from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.decorators import permission_required, user_passes_test
 
 
 
@@ -31,6 +31,35 @@ def register(request):
     else:
         form = UserCreationForm()
     return render(request, 'relationship_app/register.html', {'form': form})
+
+def is_admin(user):
+    return user.userprofile.role == 'Admin'
+
+@user_passes_test(is_admin)
+def admin_view(request):
+    return render(request, 'relationship_app/admin_view.html')
+
+# Function to check if user is librarian
+def is_librarian(user):
+    return user.userprofile.role == 'Librarian'
+
+# Librarian view
+@user_passes_test(is_librarian)
+def librarian_view(request):
+    return render(request, 'relationship_app/librarian_view.html')
+
+# Function to check if user is member
+def is_member(user):
+    return user.userprofile.role == 'Member'
+
+# Member view
+@user_passes_test(is_member)
+def member_view(request):
+    return render(request, 'relationship_app/member_view.html')
+
+# Views to manage books with custom permissions
+
+# View to add a new book
 
 
 @permission_required('relationship_app.can_add_book', raise_exception=True)
@@ -66,15 +95,4 @@ def delete_book(request, pk):
         return redirect('list_books')
     return render(request, 'relationship_app/confirm_delete.html', {'book': book})
 
-
-
-# Helper functions to test user roles
-def is_admin(user):
-    return user.is_authenticated and hasattr(user, 'userprofile') and user.userprofile.role == 'Admin'
-
-def is_librarian(user):
-    return user.is_authenticated and hasattr(user, 'userprofile') and user.userprofile.role == 'Librarian'
-
-def is_member(user):
-    return user.is_authenticated and hasattr(user, 'userprofile') and user.userprofile.role == 'Member'
 
