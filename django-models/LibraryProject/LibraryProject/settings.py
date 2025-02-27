@@ -114,6 +114,8 @@ USE_I18N = True
 USE_TZ = True
 
 LOGIN_URL = '/relationship/login/'
+LOGIN_REDIRECT_URL = '/relationship/admin-view/'
+
 
 
 
