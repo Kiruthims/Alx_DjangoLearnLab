@@ -1,14 +1,17 @@
 from django.contrib import admin
-from .models import Book
+from django.contrib.auth.admin import UserAdmin
+from .models import Book, CustomUser
 
-# Define a custom admin class for the Book model
 class BookAdmin(admin.ModelAdmin):
-
     list_display = ('title', 'author', 'publication_year')
-
     search_fields = ('title', 'author')
-
     list_filter = ('publication_year',)
 
-# Register the Book model with the custom admin options
+class CustomUserAdmin(admin.ModelAdmin):
+    model = CustomUser
+    fieldsets = UserAdmin.fieldsets + (
+        (None, {'fields': ('date_of_birth', 'profile_photo')}),
+    )
+
 admin.site.register(Book, BookAdmin)
+admin.site.register(CustomUser, CustomUserAdmin) 
