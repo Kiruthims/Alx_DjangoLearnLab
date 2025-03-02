@@ -128,12 +128,9 @@ LOGIN_REDIRECT_URL = '/relationship/admin-view/'
 
 STATIC_URL = 'static/'
 
-SECURE_BROWSER_XSS_FILTER = True
-X_FRAME_OPTIONS = 'DENY'  # or 'SAMEORIGIN'
-SECURE_CONTENT_TYPE_NOSNIFF = True
-
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
+# Cookie Security
+SESSION_COOKIE_SECURE = True  # Ensures session cookies are only sent over HTTPS.
+CSRF_COOKIE_SECURE = True  # Ensures CSRF cookies are only sent over HTTPS.
 
 # Security Settings
 CSP_DEFAULT_SRC = ("'self'",)  # Default policy: Allow content from the same origin.
@@ -141,8 +138,23 @@ CSP_SCRIPT_SRC = ("'self'",)  # Allow JavaScript from the same origin.
 CSP_STYLE_SRC = ("'self'",)  # Allow CSS from the same origin.
 CSP_IMG_SRC = ("'self'", "data:") # Allow images from the same origin and data URLs.
 
+
+# HTTPS Settings
+SECURE_SSL_REDIRECT = True # Redirects all HTTP requests to HTTPS. Even if it is a http it is redirected to https
+SECURE_HSTS_SECONDS = 31536000  # Mwaka m'moja  Sets the HSTS header to tell browsers to only use HTTPS for one year. max_age is commonly set to one year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True  # Applies HSTS to all subdomains.
+SECURE_HSTS_PRELOAD = True  # Allows your site to be included in browser HSTS preload lists.
+
+
+# Header Security
+X_FRAME_OPTIONS = 'DENY'  #Prevents clickjacking by disallowing framing. (iframe)
+SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevents MIME sniffing (Multiprpose Internet Mail Extension)
+SECURE_BROWSER_XSS_FILTER = True  # Enables the browser's XSS filter. (Cross-site Scripting)
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'bookshelf.CustomUser'
+
+
