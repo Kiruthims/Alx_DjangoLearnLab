@@ -6,9 +6,21 @@
 </head>
 <body>
     <h1>Books by Kenyan Authors:</h1>
+
+    <form method="get" action="{% url 'list_books' %}">
+        <input type="text" name="q" placeholder="Search books..." value="{{ search_term|default:'' }}">
+        <button type="submit">Search</button>
+    </form>
+
     <ul>
         {% for book in books %}
             <li>{{ book.title }} by {{ book.author.name }}</li>
+        {% empty %}
+            {% if search_term %}
+                <li>No books found matching "{{ search_term }}".</li>
+            {% else %}
+                <li>No books available.</li>
+            {% endif %}
         {% endfor %}
     </ul>
 </body>
