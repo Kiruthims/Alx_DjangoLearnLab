@@ -66,3 +66,15 @@ The /api/books/ endpoint now supports advanced query parameters:
 Filtering: Use ?publication_year=2020 to filter books by the publication year.
 Searching: Use ?search=keyword to search for books by title or author name.
 Ordering: Use ?ordering=title (or ?ordering=-title for descending order) to order the results.
+
+
+Unit test for DRF API
+The file is named /api/test_views.py and contains comprehensive tests for CRUD operations as well as filtering, searching, and ordering.
+Tests for each endpoint are implemented using Django’s built-in TestCase (which is based on Python’s unittest module).
+Correct Status Codes:
+
+GET (list/retrieve): Expecting HTTP 200 OK.
+POST (create): HTTP 401 for unauthenticated and HTTP 201 for authenticated.
+PUT (update): HTTP 401/403 for unauthenticated and HTTP 200 for authenticated.
+DELETE (delete): HTTP 401/403 for unauthenticated and HTTP 204 for authenticated.
+Filtering, searching, and ordering endpoints are also checked to ensure they return HTTP 200 OK and correct data.
