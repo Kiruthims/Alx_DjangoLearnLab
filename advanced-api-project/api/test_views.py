@@ -8,17 +8,17 @@ User = get_user_model()
 
 class BookAPITests(APITestCase):
     def setUp(self):
-        # Create a test user for endpoints requiring authentication.
+        # Create a test user (using a password that will be used with self.client.login)
         self.user = User.objects.create_user(username='testuser', password='testpass')
         
-        # Create an Author instance (ensure your Author model has a 'name' field).
+        # Create an Author instance (ensure your Author model has a 'name' field)
         self.author = Author.objects.create(name='Test Author')
         
-        # Create Book instances for testing.
+        # Create Book instances for testing
         self.book1 = Book.objects.create(title='Book One', publication_year=2020, author=self.author)
         self.book2 = Book.objects.create(title='Book Two', publication_year=2021, author=self.author)
         
-        # Define endpoint URLs using reverse() and the URL names defined in your urls.py.
+        # Define endpoint URLs using reverse() and URL names defined in your urls.py
         self.list_url = reverse('book-list')
         self.create_url = reverse('book-create')
         self.detail_url = lambda pk: reverse('book-detail', kwargs={'pk': pk})
@@ -26,13 +26,13 @@ class BookAPITests(APITestCase):
         self.delete_url = lambda pk: reverse('book-delete', kwargs={'pk': pk})
     
     def test_list_books(self):
-        # Test GET /api/books/ returns a 200 status and a list of books.
+        # GET /api/books/ should return HTTP 200 and a list of books
         response = self.client.get(self.list_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertGreaterEqual(len(response.data), 2)
     
     def test_create_book_unauthenticated(self):
-        # Unauthenticated POST should return 401 Unauthorized.
+        # Unauthenticated POST should return HTTP 401 Unauthorized
         data = {
             'title': 'Book Three',
             'publication_year': 2022,
@@ -42,8 +42,8 @@ class BookAPITests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
     
     def test_create_book_authenticated(self):
-        # Authenticated POST should return 201 Created and the new book data.
-        self.client.force_authenticate(user=self.user)
+        # Use self.client.login to authenticate the request
+        self.client.login(username='testuser', password='testpass')
         data = {
             'title': 'Book Three',
             'publication_year': 2022,
@@ -52,16 +52,17 @@ class BookAPITests(APITestCase):
         response = self.client.post(self.create_url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data['title'], 'Book Three')
+        self.client.logout()
     
     def test_retrieve_book(self):
-        # GET /api/books/<pk>/ should return a 200 status and the correct book.
+        # GET /api/books/<pk>/ should return HTTP 200 and the correct book data
         url = self.detail_url(self.book1.pk)
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['title'], self.book1.title)
     
     def test_update_book_unauthenticated(self):
-        # Unauthenticated PUT should return 401 or 403.
+        # Unauthenticated PUT should return HTTP 401 Unauthorized or 403 Forbidden
         data = {
             'title': 'Updated Book One',
             'publication_year': self.book1.publication_year,
@@ -72,8 +73,8 @@ class BookAPITests(APITestCase):
         self.assertIn(response.status_code, [status.HTTP_401_UNAUTHORIZED, status.HTTP_403_FORBIDDEN])
     
     def test_update_book_authenticated(self):
-        # Authenticated PUT should update the book and return 200 OK.
-        self.client.force_authenticate(user=self.user)
+        # Authenticate using self.client.login, then update the book
+        self.client.login(username='testuser', password='testpass')
         data = {
             'title': 'Updated Book One',
             'publication_year': self.book1.publication_year,
@@ -83,23 +84,25 @@ class BookAPITests(APITestCase):
         response = self.client.put(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['title'], 'Updated Book One')
+        self.client.logout()
     
     def test_delete_book_unauthenticated(self):
-        # Unauthenticated DELETE should return 401 or 403.
+        # Unauthenticated DELETE should return HTTP 401 Unauthorized or 403 Forbidden
         url = self.delete_url(self.book1.pk)
         response = self.client.delete(url)
         self.assertIn(response.status_code, [status.HTTP_401_UNAUTHORIZED, status.HTTP_403_FORBIDDEN])
     
     def test_delete_book_authenticated(self):
-        # Authenticated DELETE should remove the book and return 204 No Content.
-        self.client.force_authenticate(user=self.user)
+        # Authenticate using self.client.login, then delete the book
+        self.client.login(username='testuser', password='testpass')
         url = self.delete_url(self.book1.pk)
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(Book.objects.filter(pk=self.book1.pk).exists())
+        self.client.logout()
     
     def test_filtering_books(self):
-        # Test filtering: GET /api/books/?publication_year=2020 should return books with publication_year 2020.
+        # Filtering by publication_year should return only matching books
         url = f"{self.list_url}?publication_year=2020"
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -107,14 +110,14 @@ class BookAPITests(APITestCase):
             self.assertEqual(book['publication_year'], 2020)
     
     def test_search_books(self):
-        # Test searching: GET /api/books/?search=Book One should return books matching "Book One".
+        # Searching for "Book One" should return books with that term in the title
         url = f"{self.list_url}?search=Book One"
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue(any("Book One" in book['title'] for book in response.data))
     
     def test_ordering_books(self):
-        # Test ordering: GET /api/books/?ordering=-publication_year should order books by publication_year descending.
+        # Ordering by publication_year in descending order should return books in sorted order
         url = f"{self.list_url}?ordering=-publication_year"
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
