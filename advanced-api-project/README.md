@@ -1,70 +1,62 @@
-Books API Documentation
+Advanced API Project
+This project demonstrates the implementation of a basic CRUD API using Django REST Framework (DRF) for managing a Book model, along with its related Author model. It uses DRF's generic views and permissions to handle the basic operations: Create, Read, Update, and Delete (CRUD).
 
-Overview
+Features
+ListView: Retrieves a list of all books.
+DetailView: Retrieves a single book by its ID.
+CreateView: Allows the creation of a new book, including linking an author.
+UpdateView: Allows modification of an existing book.
+DeleteView: Allows deletion of a book.
+Models
+Book: Represents a book in the system. It includes fields like title, description, author, and a timestamp for when it was last modified.
+Author: Represents the author of a book. It is linked to books via a foreign key.
+Views
+The following views are implemented to handle CRUD operations:
 
-A Django REST API for managing books, allowing users to create and retrieve book records. Authentication is required for certain actions.
+1. BookListView: List of Books
+URL: /books/
+Method: GET
+Permissions:
+Read-only access for unauthenticated users.
+Authenticated users can modify.
+2. BookDetailView: Retrieve a Single Book
+URL: /books/<int:pk>/
+Method: GET
+Permissions:
+Read-only access for unauthenticated users.
+3. BookCreateView: Add a New Book
+URL: /books/create/
+Method: POST
+Permissions:
+Accessible only by authenticated users.
+Details:
+Ensures the author field is linked to an existing author before saving the new book.
+If an invalid author ID is provided, it raises a ValidationError.
+4. BookUpdateView: Modify an Existing Book
+URL: /books/<int:pk>/update/
 
-Setup
+Method: PUT
 
-Clone the repository:
+Permissions:
 
-git clone <repository-url>
+Accessible only by authenticated users.
+Details:
 
-Navigate to the project directory:
+Automatically updates the last_modified field whenever the book is modified.
+5. BookDeleteView: Remove a Book
+URL: /books/<int:pk>/delete/
 
-cd advanced-api-project
+Method: DELETE
 
-Set up a virtual environment:
+Permissions:
 
-python -m venv venv
-source venv/bin/activate  # Windows: `venv\Scripts\activate`
+Accessible only by authenticated users.
+Details:
 
-Install dependencies:
+Deletes the book instance when the endpoint is accessed.
+Permissions
+The permissions for the views are set as follows:
 
-pip install -r requirements.txt
+IsAuthenticatedOrReadOnly: For ListView and DetailView, unauthenticated users can view the data, but authenticated users can create or modify.
+IsAuthenticated: For CreateView, UpdateView, and DeleteView, only authenticated users can access the view and perform actions.
 
-Apply migrations:
-
-python manage.py migrate
-
-Create a superuser:
-
-python manage.py createsuperuser
-
-Start the server:
-
-python manage.py runserver
-
-Authentication
-
-Uses token-based authentication. Obtain a token with:
-
-POST /api/token/
-
-Include it in requests:
-
-Authorization: Token <your_token>
-
-Endpoints
-
-Public Endpoints
-
-GET /api/books/ - List books
-
-GET /api/books/<id>/ - Retrieve a book
-
-Authenticated Endpoints
-
-POST /api/books/ - Create a book
-
-Restrictions
-
-PUT, PATCH, and DELETE are not allowed to enforce read-only access and maintain data integrity.
-
-Notes
-
-Ensure proper authentication for protected actions.
-
-Use Postman.
-
-Read-only access is available for unauthenticated users.
