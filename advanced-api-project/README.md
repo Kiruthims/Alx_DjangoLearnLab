@@ -60,3 +60,9 @@ The permissions for the views are set as follows:
 IsAuthenticatedOrReadOnly: For ListView and DetailView, unauthenticated users can view the data, but authenticated users can create or modify.
 IsAuthenticated: For CreateView, UpdateView, and DeleteView, only authenticated users can access the view and perform actions.
 
+Filtering, Searching, and Ordering
+The /api/books/ endpoint now supports advanced query parameters:
+
+Filtering: Use ?publication_year=2020 to filter books by the publication year.
+Searching: Use ?search=keyword to search for books by title or author name.
+Ordering: Use ?ordering=title (or ?ordering=-title for descending order) to order the results.
