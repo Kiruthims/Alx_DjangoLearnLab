@@ -3,8 +3,8 @@ from .views import BookListCreateView, BookDetailView
 
 urlpatterns = [
     path('books/', BookListCreateView.as_view(), name='book-list-create'),
-    path('books/create/', BookListCreateView.as_view(), name='book-create'),  # Explicit create
     path('books/<int:pk>/', BookDetailView.as_view(), name='book-detail'),
-    path('books/<int:pk>/update/', BookDetailView.as_view(), name='book-update'),  # Explicit update
-    path('books/<int:pk>/delete/', BookDetailView.as_view(), name='book-delete'),  # Explicit delete
+    path('books/<int:pk>/update/', BookDetailView.as_view(), name='book-update'),
+    path('books/<int:pk>/delete/', BookDetailView.as_view(), name='book-delete'),
 ]
+

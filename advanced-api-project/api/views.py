@@ -1,11 +1,11 @@
-from rest_framework import generics, permissions
-from .models import Book
+from rest_framework import generics, permissions, serializers
+from .models import Book, Author
 from .serializers import BookSerializer
 from datetime import date  # Import date to use in perform_update
-from rest_framework .permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 
-# ListView(retrieve all books) and CreateView (Add a new book)
+# ListView (retrieve all books) and CreateView (Add a new book)
 class BookListCreateView(generics.ListCreateAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
@@ -21,8 +21,7 @@ class BookListCreateView(generics.ListCreateAPIView):
             raise serializers.ValidationError({"author": "Invalid author ID."})
 
 
-
-# DetailView(retrieve a single book), UpdateView (modify book), and DeleteView (remove book)
+# DetailView (retrieve a single book), UpdateView (modify book), and DeleteView (remove book)
 class BookDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
@@ -31,3 +30,8 @@ class BookDetailView(generics.RetrieveUpdateDestroyAPIView):
     def perform_update(self, serializer):
         """Customize behavior before updating an existing book instance."""
         serializer.save(last_modified=date.today())  # Automatically update last_modified date when editing
+
+    def perform_destroy(self, instance):
+        """Customize behavior before deleting a book instance."""
+        instance.delete()  # Delete the book instance when requested
+
