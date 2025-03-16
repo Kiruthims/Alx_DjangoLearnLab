@@ -1,7 +1,7 @@
 from rest_framework import generics, permissions
 from .models import Book, Author
 from .serializers import BookSerializer
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from datetime import date
 
 # ListView - Retrieve all books
