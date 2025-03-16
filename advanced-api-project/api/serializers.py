@@ -5,6 +5,9 @@ from datetime import date  # To facilitate the use of current year validation
 class BookSerializer(serializers.ModelSerializer):
     """Serializer for the Book model with validation for publication year and title."""
 
+
+    author = serializers.ReadOnlyField(source='author.username')
+
     def validate_publication_year(self, value):
         """Ensure publication year is not in the future."""
         current_year = date.today().year  # Use current date to get the current year
