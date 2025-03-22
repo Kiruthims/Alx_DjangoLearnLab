@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404 # to render templates for various views and also redrct after success
-from .forms import CustomUserCreationForm, UserUpdateForm, CommentForm  # required for user registr
+from .forms import CustomUserCreationForm, UserUpdateForm, CommentForm,PostForm # required for user registr
 from django.contrib.auth.decorators import login_required #to protect a view from unauthenticated usrs
 from django.contrib.auth import login #to login users after regstn
 from django.contrib import messages
@@ -67,7 +67,7 @@ class PostDetailView(DetailView):
 # Create a new post (authenticated users only)
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
-    fields = ['title', 'content']  # The form will include these fields
+    form_class = PostForm
     template_name = 'blog/post_form.html'
     
     def form_valid(self, form):
@@ -78,7 +78,7 @@ class PostCreateView(LoginRequiredMixin, CreateView):
 # Update an existing post (only the post author)
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
-    fields = ['title', 'content']
+    form_class = PostForm
     template_name = 'blog/post_form.html'
     
     def form_valid(self, form):
