@@ -78,3 +78,16 @@ CSRF protection is enabled for all forms.
 Users must be logged in to access /profile/.
 
 Logout clears the session and prevents access to restricted pages.
+
+ Blog Post Management
+- List View: Accessible at `/posts/`, shows all posts.
+- Detail View: Accessible at `/posts/<post_id>/`.
+- Create Post: Authenticated users can create new posts at `/posts/new/`.
+- Update Post: Only the post author can edit at `/posts/<post_id>/edit/`.
+- Delete Post: Only the post author can delete at `/posts/<post_id>/delete/`.
+
+ Testing Instructions
+1. Register a new user and log in.
+2. Create a new blog post.
+3. View, update, and delete the blog post.
+4. Try accessing update/delete views as a non-author to verify permissions.
