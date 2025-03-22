@@ -1,11 +1,11 @@
 {% extends "base.html" %}
-{% block title %}Profile{% endblock %}
+{% load static %}
 
 {% block content %}
-    <h2>Your Profile</h2>
+    <h2>Login</h2>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Update</button>
+        <button type="submit">Login</button>
     </form>
 {% endblock %}
