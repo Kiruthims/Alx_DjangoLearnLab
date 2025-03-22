@@ -8,4 +8,11 @@
     <a href="{% url 'post-update' object.pk %}">Edit</a>
     <a href="{% url 'post-delete' object.pk %}">Delete</a>
 {% endif %}
+{% if object.tags.all %}
+    <p>Tags: 
+    {% for tag in object.tags.all %}
+        <a href="{% url 'posts-by-tag' tag.name %}">{{ tag.name }}</a>{% if not forloop.last %}, {% endif %}
+    {% endfor %}
+    </p>
+{% endif %}
 {% endblock %}

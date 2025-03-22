@@ -91,3 +91,22 @@ Logout clears the session and prevents access to restricted pages.
 2. Create a new blog post.
 3. View, update, and delete the blog post.
 4. Try accessing update/delete views as a non-author to verify permissions.
+
+
+ Tagging and Search Functionality
+
+Tagging
+ Posts can be tagged with multiple tags.
+ When creating or updating a post, enter tag names as a comma-separated list.
+ Tags are unique and linked to posts via a many-to-many relationship.
+ On the post detail page, tags are displayed and clickable to filter posts.
+
+Search
+ Users can search for posts by entering keywords.
+ The search view filters posts based on the title, content, or tag names.
+ The search results page displays all matching posts.
+
+How to Test
+1. Create a post and add tags (e.g., "django, tutorial").
+2. Click a tag to view posts associated with it.
+3. Use the search bar to find posts by entering a keyword.

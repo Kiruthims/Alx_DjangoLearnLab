@@ -141,3 +141,19 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     
     def get_success_url(self):
         return reverse('post-detail', kwargs={'pk': self.object.post.pk})
+
+
+def search(request):
+    query = request.GET.get('q', '')
+    results = Post.objects.all()
+    if query:
+        results = results.filter(
+            Q(title__icontains=query) |
+            Q(content__icontains=query) |
+            Q(tags__name__icontains=query)
+        ).distinct()  # To avoid duplication if multiple tags match
+    context = {
+        'query': query,
+        'results': results,
+    }
+    return render(request, 'blog/search_results.html', context)
