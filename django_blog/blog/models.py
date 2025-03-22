@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from taggit.managers import TaggableManager
 
 
 class Tag(models.Model):
@@ -14,7 +15,8 @@ class Post(models.Model):
     content = models.TextField()
     published_date = models.DateTimeField(auto_now_add = True)
     author = models.ForeignKey(User, on_delete = models.CASCADE)
-    tags = models.ManyToManyField(Tag, blank=True, related_name='posts')  
+    tags = TaggableManager(blank=True)  # Tagging functionality
+ 
 
 
     def __str__(self):
