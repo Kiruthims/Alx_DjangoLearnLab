@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from .models import UserProfile, Post, Comment
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.db.models import Q
 
 
 
@@ -145,15 +146,9 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
 def search(request):
     query = request.GET.get('q', '')
-    results = Post.objects.all()
-    if query:
-        results = results.filter(
-            Q(title__icontains=query) |
-            Q(content__icontains=query) |
-            Q(tags__name__icontains=query)
-        ).distinct()  # To avoid duplication if multiple tags match
-    context = {
-        'query': query,
-        'results': results,
-    }
-    return render(request, 'blog/search_results.html', context)
+    posts = Post.objects.filter(
+        Q(title__icontains=query) | 
+        Q(content__icontains=query) | 
+        Q(tags__name__icontains=query)
+    ).distinct()
+    return render(request, 'blog/search_results.html', {'posts': posts, 'query': query})
