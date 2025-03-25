@@ -1,23 +1,28 @@
-from rest_framework.authtoken.models import Token
+from django.contrib.auth import get_user_model
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
-from django.contrib.auth import authenticate
+from rest_framework.views import APIView
+from rest_framework.authtoken.models import Token
+from rest_framework.permissions import AllowAny
+from .serializers import RegisterSerializer, LoginSerializer
 
-@api_view(['POST'])
-def register_user(request):
-    serializer = RegisterSerializer(data=request.data)
-    if serializer.is_valid():
-        user = serializer.save()
-        token, created = Token.objects.get_or_create(user=user)
-        return Response({'token': token.key})
-    return Response(serializer.errors, status=400)
+User = get_user_model()
 
-@api_view(['POST'])
-def login_user(request):
-    username = request.data.get('username')
-    password = request.data.get('password')
-    user = authenticate(username=username, password=password)
-    if user:
-        token, created = Token.objects.get_or_create(user=user)
-        return Response({'token': token.key})
-    return Response({'error': 'Invalid Credentials'}, status=400)
+class RegisterView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = RegisterSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            token = Token.objects.get(user=user)
+            return Response({"message": "User registered successfully", "token": token.key})
+        return Response(serializer.errors, status=400)
+
+class LoginView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = LoginSerializer(data=request.data)
+        if serializer.is_valid():
+            return Response({"message": "Login successful", "token": serializer.validated_data['token']})
+        return Response(serializer.errors, status=400)
