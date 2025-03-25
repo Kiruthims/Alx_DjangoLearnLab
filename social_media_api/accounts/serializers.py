@@ -18,7 +18,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         fields = ['username', 'email', 'password']
 
     def create(self, validated_data):
-        user = User.objects.create_user(**validated_data)
+        user = get_user_model().objects.create_user(**validated_data)
         Token.objects.create(user=user)  
         return user
 
@@ -33,3 +33,6 @@ class LoginSerializer(serializers.Serializer):
             raise serializers.ValidationError("Invalid credentials")
         token, _ = Token.objects.get_or_create(user=user)  
         return {'token': token.key, 'user': user}       
+
+
+        
