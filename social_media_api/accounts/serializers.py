@@ -32,7 +32,14 @@ class LoginSerializer(serializers.Serializer):
         if not user:
             raise serializers.ValidationError("Invalid credentials")
         token, _ = Token.objects.get_or_create(user=user)  
-        return {'token': token.key, 'user': user}       
+        return {'token': token.key, 'user': user}    
+
+
+class FollowSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'following', 'followers']
+        read_only_fields = ['id', 'username', 'followers']   
 
 
         
