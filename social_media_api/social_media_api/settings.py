@@ -99,11 +99,18 @@ WSGI_APPLICATION = 'social_media_api.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
-
 DATABASES = {
-    'default': dj_database_url.config(default='postgresql://social_media_api_db_user:sWsPxnk4ZDXfvyp05RyjU2wB3Cdf5bNA@dpg-cvitu79r0fns73e9ovlg-a/social_media_api_db')
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'social_media_api_db',
+        'USER': 'social_media_api_db_user',
+        'PASSWORD': 'sWsPxnk4ZDXfvyp05RyjU2wB3Cdf5bNA',
+        'HOST': 'postgresql://social_media_api_db_user:sWsPxnk4ZDXfvyp05RyjU2wB3Cdf5bNA@dpg-cvitu79r0fns73e9ovlg-a/social_media_api_db',
+        'PORT': '5432',
+    }
 }
+
+
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
 
